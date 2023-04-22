@@ -1,0 +1,70 @@
+export const List: React.FC<{ onSelect: (chatRoomId: string) => void }> = ({ onSelect }) => {
+    const [chatrooms, setChatRooms] = React.useState<any[]>([]);
+  
+    React.useEffect(() => {
+      axios.get(`http://localhost:4000/api/getchatrooms`)
+        .then((res: AxiosResponse) => {
+          if (res.data) {
+            setChatRooms(res.data);
+          }
+        })
+    }, [])
+  
+    const handleSelect = (chatRoomId: string) => {
+      axios.get(`http://localhost:4000/api/messages/${chatRoomId}`)
+        .then((res: AxiosResponse) => {
+          if (res.data) {
+            onSelect(res.data);
+          }
+        })
+    }
+  
+    return (
+      <>
+        <div className='w-[25%] bg-white md:block hidden overflow-y-scroll'>
+          <div className='py-5 px-5 text-2xl font-[500] bg-white '>
+            Chats
+          </div>
+          <div className=''>
+            {
+              chatrooms.map((data, index) => (
+                <div className='py-3 border-b-[2px] hover:bg-[#e5e7eb]' key={data._id} onClick={() => handleSelect(data._id)}>
+                  <div className='px-5 flex items-center'>
+                    <BadgeAvatars size={48} icon={data.username}/>
+                    <div className='ml-3'>
+                      <div className='text-base font-bold'>
+                        {data.username}
+                      </div>
+                      <div className='text-sm'>
+                        Heyy
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            }                
+          </div>
+        </div>
+      </>
+    )
+  }
+  
+  export const Home: React.FC<{}> = () => {
+    const [selectedChat, setSelectedChat] = React.useState<any>();
+  
+    const handleChatSelect = (chatData: any) => {
+      setSelectedChat(chatData);
+    }
+  
+    return (
+      <div className='flex h-screen overflow-hidden w-full'>
+        <List onSelect={handleChatSelect} />
+        {selectedChat && <Chat data={selectedChat} />}
+      </div>
+    )
+  }
+          
+
+
+
+  git add . && git commit -m "update: creating dynamic chatrooms"
