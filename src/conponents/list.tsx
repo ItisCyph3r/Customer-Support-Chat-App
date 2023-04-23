@@ -8,20 +8,22 @@ import env from '../env';
 
 const myArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-export const List: React.FC<{}> = () => {
+type Props = {
+    chatroom: any
+    // onSelect: (chatRoomId: string) => any
+    onSelect: any
+}
 
-    const [chatrooms, setChatRooms] = React.useState<any[]>([]);
-
-    React.useEffect(() => {
-        // axios.get(`${env.apiBaseUrl}/api/getchatrooms`)
-        axios.get(`http://localhost:4000/api/getchatrooms`)
+export default function List(props: Props) {
+    const handleSelect = (chatRoomId: string) => {
+        axios.get(`http://localhost:4000/api/messages/${chatRoomId}`)
             .then((res: AxiosResponse) => {
                 if (res.data) {
-                    setChatRooms(res.data);
+                props.onSelect(res.data);
                 }
             })
-    }, [chatrooms])
-    
+    }
+
     return (
         <>
         {/* <BasicModal /> */}
@@ -31,8 +33,9 @@ export const List: React.FC<{}> = () => {
                 </div>
                 <div className=''>
                     {
-                        chatrooms.map((data, index) => (
-                            <div className='py-3 border-b-[2px] hover:bg-[#e5e7eb]' key={data._id}>
+                        props.chatroom.map((data: any) => (
+                            // <Link>
+                            <div className='py-3 border-b-[2px] hover:bg-[#e5e7eb]' key={data._id} onClick={() => handleSelect(data._id)}>
                                 <div className='px-5 flex items-center'>
                                     <BadgeAvatars size={48} icon={data.username}/>
                                     <div className='ml-3'>
@@ -47,6 +50,7 @@ export const List: React.FC<{}> = () => {
                                     </div>
                                 </div>
                             </div>
+                            // </Link>
                         ))
                     }                
                 </div>

@@ -42,11 +42,12 @@ const SmallAvatar = styled(Avatar)(({ theme }) => ({
 type Props = {
     size: number
     icon?: string
+    className?: string
 }
 
 export default function BadgeAvatars(props: Props) {
     return (
-        <Stack direction="row" spacing={2}>
+        <Stack direction="row" spacing={2} className={`${props.className}`}>
             <StyledBadge
                 overlap="circular"
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
