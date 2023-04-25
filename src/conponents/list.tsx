@@ -15,20 +15,41 @@ type Props = {
 }
 
 export default function List(props: Props) {
+
+    const [chatRoomId, setChatRoomId] = React.useState('');
+
+
+    React.useEffect(() => {
+        if (chatRoomId) {
+            axios.get(`http://localhost:4000/api/messages/${chatRoomId}`)
+                .then((res: AxiosResponse) => {
+                    if (res.data) {
+                        props.onSelect(res.data);
+                    }
+                })
+        }
+    }, [chatRoomId]);
+
     const handleSelect = (chatRoomId: string) => {
-        axios.get(`http://localhost:4000/api/messages/${chatRoomId}`)
-            .then((res: AxiosResponse) => {
-                if (res.data) {
-                props.onSelect(res.data);
-                }
-            })
+        setChatRoomId(chatRoomId);
     }
+
+    // const handleSelect = (chatRoomId: string) => {
+    //     React.useEffect(() => {
+    //         axios.get(`http://localhost:4000/api/messages/${chatRoomId}`)
+    //         .then((res: AxiosResponse) => {
+    //             if (res.data) {
+    //             props.onSelect(res.data);
+    //             }
+    //         })
+    //     }, [chatRoomId])   
+    // }
 
     return (
         <>
         {/* <BasicModal /> */}
-            <div className='w-[25%] bg-white md:block hidden overflow-y-scroll'>
-                <div className='py-5 px-5 text-2xl font-[500] bg-white '>
+            <div className='w-[25%] bg-white md:block hidden overflow-y-scroll border-r-[2px]'>
+                <div className='py-5 px-5 text-2xl font-[500] bg-white'>
                     Chats
                 </div>
                 <div className=''>

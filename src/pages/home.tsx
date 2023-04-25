@@ -25,15 +25,14 @@ export const Home: React.FC<{}> = () => {
         setSelectedChat(chatData.messages);
     }
 
-    // console.log(selectedChat);
+    console.log(selectedChat);
     return (
         <div className='flex h-screen overflow-hidden w-full'>
                 <List chatroom={chatrooms} onSelect={handleChatSelect}/>
-            {/* <Welcome /> */}
-            {/* <Chat data={selectedChat}/> */}
-            {/* { selectedChat ? <Chat data={selectedChat} /> : <Welcome /> } */}
+            { selectedChat === undefined && <Welcome />}
 
-            {chatrooms.length > 0 && <Chat data={selectedChat} />}
+            {/* {chatrooms.length > 0 && <Chat data={selectedChat} />} */}
+            { selectedChat !== undefined && <Chat data={selectedChat} />}
 
 
 
