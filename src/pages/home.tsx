@@ -22,20 +22,16 @@ export const Home: React.FC<{}> = () => {
     }, [chatrooms])
 
     const handleChatSelect = (chatData: any) => {
-        setSelectedChat(chatData.messages);
+        setSelectedChat(chatData);
     }
 
-    console.log(selectedChat);
     return (
         <div className='flex h-screen overflow-hidden w-full'>
-                <List chatroom={chatrooms} onSelect={handleChatSelect}/>
+            <List chatroom={chatrooms} onSelect={handleChatSelect}/>
+            
             { selectedChat === undefined && <Welcome />}
 
-            {/* {chatrooms.length > 0 && <Chat data={selectedChat} />} */}
             { selectedChat !== undefined && <Chat data={selectedChat} />}
-
-
-
         </div>
     )
 }

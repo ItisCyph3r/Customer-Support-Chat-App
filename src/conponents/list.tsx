@@ -6,57 +6,53 @@ import BasicModal from './backdrop';
 import axios, {AxiosResponse} from 'axios';
 import env from '../env';
 
-const myArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+interface Message {
+    id: string;
+    text: string;
+}
 
-type Props = {
-    chatroom: any
-    // onSelect: (chatRoomId: string) => any
-    onSelect: any
+interface Props {
+    onSelect: (messages: Message[]) => void;
+    chatroom: any;
 }
 
 export default function List(props: Props) {
 
-    const [chatRoomId, setChatRoomId] = React.useState('');
-
+    const [chatRoomId, setChatRoomId] = React.useState<string>('');
+    const [messages, setMessages] = React.useState<Message[]>([]);
 
     React.useEffect(() => {
         if (chatRoomId) {
             axios.get(`http://localhost:4000/api/messages/${chatRoomId}`)
-                .then((res: AxiosResponse) => {
-                    if (res.data) {
-                        props.onSelect(res.data);
+                .then((res: AxiosResponse<{ messages: Message[] }>) => {
+                    if (res.data.messages && JSON.stringify(res.data.messages) !== JSON.stringify(messages)) {
+                        setMessages(res.data.messages);
+                        props.onSelect(res.data.messages);
                     }
                 })
         }
-    }, [chatRoomId]);
+    }, [chatRoomId, props.onSelect, messages]);
 
     const handleSelect = (chatRoomId: string) => {
         setChatRoomId(chatRoomId);
     }
-
-    // const handleSelect = (chatRoomId: string) => {
-    //     React.useEffect(() => {
-    //         axios.get(`http://localhost:4000/api/messages/${chatRoomId}`)
-    //         .then((res: AxiosResponse) => {
-    //             if (res.data) {
-    //             props.onSelect(res.data);
-    //             }
-    //         })
-    //     }, [chatRoomId])   
-    // }
-
+    
     return (
         <>
-        {/* <BasicModal /> */}
             <div className='w-[25%] bg-white md:block hidden overflow-y-scroll border-r-[2px]'>
-                <div className='py-5 px-5 text-2xl font-[500] bg-white'>
-                    Chats
+                <div className='py-5 px-5 text-2xl font-[500]'>
+                    <div>
+                        Chats
+                    </div>
+                    <div>
+
+                    </div>
+                    
                 </div>
                 <div className=''>
                     {
                         props.chatroom.map((data: any) => (
-                            // <Link>
-                            <div className='py-3 border-b-[2px] hover:bg-[#e5e7eb]' key={data._id} onClick={() => handleSelect(data._id)}>
+                            <div className='py-3 border-b-[2px] border-t-[2px] hover:bg-[#e5e7eb]' key={data._id} onClick={() => handleSelect(data._id)}>
                                 <div className='px-5 flex items-center'>
                                     <BadgeAvatars size={48} icon={data.username}/>
                                     <div className='ml-3'>
@@ -64,14 +60,13 @@ export default function List(props: Props) {
                                             {/* Elon Musk  */}
                                             {data.username}
                                         </div>
-                                        <div className='text-sm'>
-                                            Heyy
+                                        <div className='text-sm'>                                        
+                                            { data.lastMessage && data.lastMessage.text.substring(0, 20) + '...' }
                                         </div>
                                         
                                     </div>
                                 </div>
                             </div>
-                            // </Link>
                         ))
                     }                
                 </div>

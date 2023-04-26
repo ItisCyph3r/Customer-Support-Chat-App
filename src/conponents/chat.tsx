@@ -38,7 +38,7 @@ export default function Chat({ data }: Props) {
     
     await setText('');
   }
-
+  
   React.useEffect(() => {
     // Scroll to the bottom of the container when the component mounts or when the messages change
     const container: any = containerRef.current;
@@ -108,6 +108,7 @@ export default function Chat({ data }: Props) {
               <input 
                 className="outline-none w-full md:w-[76%] max-w-[100%] py-2 px-2 rounded-xl" 
                 onChange={(e) => setText(e.target.value)}
+                value={text}
               />
               <button className="ml-3 rounded-xl" onClick={postData}>
                 <BsFillArrowRightCircleFill size={30} />
