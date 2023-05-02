@@ -11,6 +11,8 @@ export const Home: React.FC<{}> = () => {
     const [chatrooms, setChatRooms] = React.useState<any[]>([]);
     const [selectedChat, setSelectedChat] = React.useState<any>();
 
+    
+
     React.useEffect(() => {
         // axios.get(`${env.apiBaseUrl}/api/getchatrooms`)
         axios.get(`http://localhost:4000/api/getchatrooms`)
@@ -29,7 +31,7 @@ export const Home: React.FC<{}> = () => {
         <div className='flex h-screen overflow-hidden w-full'>
             <List chatroom={chatrooms} onSelect={handleChatSelect}/>
             
-            { selectedChat === undefined && <Welcome />}
+            {/* { selectedChat === undefined && <Welcome />} */}
 
             { selectedChat !== undefined && <Chat data={selectedChat} />}
         </div>
