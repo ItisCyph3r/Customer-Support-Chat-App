@@ -1,22 +1,27 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import { Routes, Route } from 'react-router-dom';
 import { Welcome } from '../src/conponents/Welcome'
 import { Home } from './pages/home';
+import Client from './conponents/client';
+
+
 
 
 
 function App() {
   return (
     <>
-    <Routes>
-      <Route path="/" element={<Welcome/>} />
-      <Route path='/chat' element={Home} /> 
-    </Routes>
+      {/* <div className="App">
+        <Home /> 
+      </div> */}
+
+      <Routes>
+        <Route path="/" element={<Welcome />} />
+        {/* <Route path="/chats" element={<Home />} /> */}
+        <Route path="/chat/:chatId" element={<Client />} />
+        <Route path="/admin" element={<Home />} />
+      </Routes>
     </>
-    
   );
 }
 

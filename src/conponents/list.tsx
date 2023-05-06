@@ -23,8 +23,9 @@ export default function List(props: Props) {
 
     React.useEffect(() => {
         if (chatRoomId) {
-            axios.get(`http://localhost:4000/api/messages/${chatRoomId}`)
+            axios.get(`http://localhost:4000/api/admin/messages/${chatRoomId}`)
                 .then((res: AxiosResponse<{ messages: Message[] }>) => {
+                    
                     if (res.data.messages && JSON.stringify(res.data.messages) !== JSON.stringify(messages)) {
                         setMessages(res.data.messages);
                         props.onSelect(res.data.messages);
@@ -34,9 +35,11 @@ export default function List(props: Props) {
     }, [chatRoomId, props.onSelect, messages]);
 
     const handleSelect = (chatRoomId: string) => {
+        // console.log(chatRoomId)
         setChatRoomId(chatRoomId);
     }
     
+    // console.log(messages)
     return (
         <>
             <div className='w-[25%] bg-white md:block hidden overflow-y-scroll border-r-[2px]'>
@@ -56,11 +59,11 @@ export default function List(props: Props) {
                                 <div className='px-5 flex items-center'>
                                     <BadgeAvatars size={48} icon={data.username}/>
                                     <div className='ml-3'>
-                                        <div className='text-base font-bold'>
+                                        <div className='text-sm font-bold'>
                                             {/* Elon Musk  */}
                                             {data.username}
                                         </div>
-                                        <div className='text-sm'>                                        
+                                        <div className='text-xs'>                                        
                                             { data.lastMessage && data.lastMessage.text.substring(0, 20) + '...' }
                                         </div>
                                         

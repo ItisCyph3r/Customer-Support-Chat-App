@@ -6,12 +6,21 @@ import CircularIndeterminate from "./progress";
 import { formatDate, formatTime } from "./formatDate";
 import axios from "axios";
 import env from "../env";
+import { useParams } from "react-router-dom";
 
 type Props = {
   data: any;
+  chatRoomData: any;
 };
 
-export default function Chat({ data }: Props) {
+export default function Chat({ data, chatRoomData }: Props) {
+
+  const id = useParams();
+
+  const userId = id.chatId;
+
+  // console.log(userId)
+
   const [text, setText] = React.useState('');
   const containerRef = React.useRef<HTMLDivElement>(null);
 
@@ -30,7 +39,8 @@ export default function Chat({ data }: Props) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          user: "64429973b053f546c5967bde",
+          user: data[0].admin,
+          admin: data[0]?.admin,
           chatRoom: data[0].chatRoom._id,
           text: text
         })
@@ -38,7 +48,7 @@ export default function Chat({ data }: Props) {
     
     await setText('');
   }
-  
+  console.log(data)
   React.useEffect(() => {
     // Scroll to the bottom of the container when the component mounts or when the messages change
     const container: any = containerRef.current;
@@ -46,9 +56,14 @@ export default function Chat({ data }: Props) {
   }, [data]);
 
   const messageGroups = Object.entries(groupedMessages);
-
+// console.log(messageGroups);
   return (
     <>
+    {/* {
+      chatRoomData.map((element) => (
+
+      ))
+    } */}
       <div className="sm:w-[100%] w-full  overflow-y-scroll relative" ref={containerRef}>
         <div className="py-3 px-5 border-b-[2px] flex items-center fixed bg-white w-full">
           <BadgeAvatars size={48} icon="Daiz Xchange Trading Agent"/>
@@ -70,11 +85,13 @@ export default function Chat({ data }: Props) {
                 {
                   messages.map((message: any, j: number) => (
                     <div key={message._id}>
+                      {  message.user && <>
+
                       <div
                         className={`flex mt-3 ${
                           message.user.isVerified === false
-                            ? "items-end justify-end mr-3"
-                            : "items-center"
+                            ? "items-center"
+                            : "items-end justify-end mr-3" 
                         }`}
                       >
                         {/* <BadgeAvatars size={40}/> */}
@@ -83,10 +100,10 @@ export default function Chat({ data }: Props) {
                         </div>
                       </div>
                       <div
-                        className={`text-xs px-3 mt-0 font-medium text-gray-500 flex items-center ${
+                        className={`text-[0.65rem] px-3 mt-0 font-medium text-gray-500 flex items-center ${
                           message.user.isVerified === false
-                            ? "items-end justify-end mr-3"
-                            : null
+                            ? null
+                            : "items-end justify-end mr-3"
                         } ${
                           i === messageGroups.length - 1 && j === messages.length - 1
                             ? "mb-[70px]"
@@ -96,6 +113,7 @@ export default function Chat({ data }: Props) {
                         {formatTime(message.createdAt)}
                         <BiCheckDouble size={20} className="ml-1" />
                       </div>
+                      </>}
                     </div>
                   ))
                 }
@@ -109,6 +127,7 @@ export default function Chat({ data }: Props) {
                 className="outline-none w-full md:w-[76%] max-w-[100%] py-2 px-2 rounded-xl" 
                 onChange={(e) => setText(e.target.value)}
                 value={text}
+                
               />
               <button className="ml-3 rounded-xl" onClick={postData}>
                 <BsFillArrowRightCircleFill size={30} />
