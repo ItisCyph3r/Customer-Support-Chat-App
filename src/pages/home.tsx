@@ -30,7 +30,7 @@ export const Home: React.FC<{}> = () => {
 
     React.useEffect(() => {
         // axios.get(`${env.apiBaseUrl}/api/getchatrooms`)
-        axios.get(`http://localhost:4000/api/getchatrooms`)
+        axios.get(`http://localhost:4000/api/admin/getchatrooms`)
             .then((res: AxiosResponse) => {
                 if (res.data) {
                     setChatRooms(res.data);

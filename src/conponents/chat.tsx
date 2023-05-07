@@ -1,7 +1,7 @@
 import React from "react";
 import BadgeAvatars from "./profile";
 import { BiCheckDouble } from "react-icons/bi";
-import { BsFillArrowRightCircleFill } from "react-icons/bs";
+import { BsFillArrowRightCircleFill, BsFillArrowRightSquareFill } from "react-icons/bs";
 import CircularIndeterminate from "./progress";
 import { formatDate, formatTime } from "./formatDate";
 import axios from "axios";
@@ -129,8 +129,8 @@ export default function Chat({ data, chatRoomData }: Props) {
                 value={text}
                 
               />
-              <button className="ml-3 rounded-xl" onClick={postData}>
-                <BsFillArrowRightCircleFill size={30} />
+              <button className="ml-2 rounded-xl" onClick={postData}>
+              <BsFillArrowRightSquareFill size={40} />
               </button>
             </div>
           </div>
