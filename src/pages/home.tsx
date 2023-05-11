@@ -29,7 +29,7 @@ export const Home: React.FC<{}> = () => {
     })
 
     const handleChatSelect = async (chatData: any) => {
-        await console.log(chatData)
+        // await console.log(chatData)
         await setSelectedChat(chatData);
     }
 

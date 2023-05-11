@@ -23,7 +23,7 @@ export default function Chat({ data, chatRoomData, onMenuCollapse, collapseMenu 
 
   const userId = id.chatId;
 
-  console.log(userId);
+  // console.log(userId);
   // const isMediumScreen = useMediaQuery("(min-width: 768px)");
 
 
@@ -90,7 +90,7 @@ export default function Chat({ data, chatRoomData, onMenuCollapse, collapseMenu 
   }, [data]);
 
   const messageGroups = Object.entries(groupedMessages);
-console.log(chatRoomData);
+// console.log(chatRoomData);
   return (
     <>
     {/* {
