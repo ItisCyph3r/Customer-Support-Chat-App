@@ -2,29 +2,63 @@ import React from "react";
 import BadgeAvatars from "./profile";
 import { BiCheckDouble } from "react-icons/bi";
 import { BsFillArrowRightCircleFill, BsFillArrowRightSquareFill } from "react-icons/bs";
+import { AiOutlineMenu } from 'react-icons/ai';
 import CircularIndeterminate from "./progress";
 import { formatDate, formatTime } from "./formatDate";
 import axios from "axios";
 import env from "../env";
 import { useParams } from "react-router-dom";
+import { useMediaQuery } from "react-responsive";
 
 type Props = {
   data: any;
   chatRoomData: any;
+  collapseMenu: boolean;
+  onMenuCollapse: any
 };
 
-export default function Chat({ data, chatRoomData }: Props) {
+export default function Chat({ data, chatRoomData, onMenuCollapse, collapseMenu }: Props) {
 
   const id = useParams();
 
   const userId = id.chatId;
 
-  // console.log(userId)
+  console.log(userId);
+  // const isMediumScreen = useMediaQuery("(min-width: 768px)");
 
+
+  // console.log(userId)
+  const [collaMenu, setCollaMenu] = React.useState<boolean>(true);
   const [text, setText] = React.useState('');
   const containerRef = React.useRef<HTMLDivElement>(null);
 
 
+  const [isMediumScreen, setIsMediumScreen] = React.useState(
+    window.matchMedia("(min-width: 768px)").matches
+  );
+
+  React.useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+
+    const handleChange = (event: any) => {
+      setIsMediumScreen(event.matches);
+    };
+
+    const handleResize = () => {
+      handleChange(mediaQuery);
+    };
+
+    mediaQuery.addListener(handleChange);
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      mediaQuery.removeListener(handleChange);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+// console.log(env.);
   const groupedMessages = data && data.length > 0 ? data.reduce((acc: any, message: any) => {
     const date = formatDate(message.createdAt);
     acc[date] = acc[date] || [];
@@ -33,7 +67,7 @@ export default function Chat({ data, chatRoomData }: Props) {
   }, {}) : {};
 
   async function postData() {
-    await fetch(`http://localhost:4000/api/messages`, {
+    await fetch(`${env.baseUrl}/api/messages`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -48,7 +82,7 @@ export default function Chat({ data, chatRoomData }: Props) {
     
     await setText('');
   }
-  console.log(data)
+  // console.log(data)
   React.useEffect(() => {
     // Scroll to the bottom of the container when the component mounts or when the messages change
     const container: any = containerRef.current;
@@ -56,7 +90,7 @@ export default function Chat({ data, chatRoomData }: Props) {
   }, [data]);
 
   const messageGroups = Object.entries(groupedMessages);
-// console.log(messageGroups);
+console.log(chatRoomData);
   return (
     <>
     {/* {
@@ -64,11 +98,26 @@ export default function Chat({ data, chatRoomData }: Props) {
 
       ))
     } */}
-      <div className="sm:w-[100%] w-full  overflow-y-scroll relative" ref={containerRef}>
+      <div className="w-full overflow-y-scroll relative" ref={containerRef}>
         <div className="py-3 px-5 border-b-[2px] flex items-center fixed bg-white w-full">
+          <div className="flex justify-between items-center">
+          {
+            collapseMenu === true || isMediumScreen ?
+            <div onClick={() => {
+              // setCollaMenu(!collaMenu)
+              onMenuCollapse((prevState: any) => !prevState)
+            }}
+            className="mr-4"
+          >
+              <AiOutlineMenu size={25}/>
+            </div>
+            : null
+          }
           <BadgeAvatars size={48} icon="Daiz Xchange Trading Agent"/>
+          </div>
+          
           <div className="ml-3">
-            <div className="text-xl font-[400]">Daiz Xchange Trading Agent</div>
+            <div className="text-lg font-[400]"> { userId }</div>
             <div className="text-xs text-[#a7a9ac]">Online</div>
           </div>
         </div>
@@ -124,7 +173,7 @@ export default function Chat({ data, chatRoomData }: Props) {
           <div className="w-full">
             <div className="fixed bg-[#e5e7eb] w-full bottom-0 p-2 flex">
               <input 
-                className="outline-none w-full md:w-[76%] max-w-[100%] py-2 px-2 rounded-xl" 
+                className={`outline-none w-full ${collapseMenu ? 'md:w-[100%]' : 'md:w-[76%]' } max-w-[100%] py-2 px-2 rounded-xl`}
                 onChange={(e) => setText(e.target.value)}
                 value={text}
                 

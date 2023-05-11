@@ -9,6 +9,10 @@ import Client from './conponents/client';
 
 
 function App() {
+
+  // console.log(import.meta.env.VITE_BASE_URL);
+
+
   return (
     <>
       {/* <div className="App">
@@ -19,7 +23,7 @@ function App() {
         <Route path="/" element={<Welcome />} />
         {/* <Route path="/chats" element={<Home />} /> */}
         <Route path="/chat/:chatId" element={<Client />} />
-        <Route path="/admin" element={<Home />} />
+        <Route path="/admin/" element={<Home />} />
       </Routes>
     </>
   );

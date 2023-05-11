@@ -5,13 +5,11 @@ import { BsFillArrowRightCircleFill, BsFillArrowRightSquareFill, BsFillArrowUpRi
 import CircularIndeterminate from "./progress";
 import { formatDate, formatTime } from "./formatDate";
 import axios, { AxiosResponse } from "axios";
-import env from "../env";
+// import env from "../env";
 import { useParams } from "react-router-dom";
+import env from "../env";
 
-type Props = {
-  data: any;
-  chatRoomData: any;
-};
+
 
 interface Message {
     id: string;
@@ -20,7 +18,7 @@ interface Message {
     chatRoom: any;
 }
 
-export default function Client({ data, chatRoomData }: Props) {
+export default function Client() {
 
     const id = useParams();
 
@@ -32,9 +30,21 @@ export default function Client({ data, chatRoomData }: Props) {
     const [chatrooms, setChatRooms] = React.useState<any>();
 
     React.useEffect(() => {
+        fetch(`${env.baseUrl}/api/users?u=${userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                user: userId
+            })
+        });   
+    }, [userId])
+
+    React.useEffect(() => {
         if (userId) {
             axios
-                .get(`http://localhost:4000/api/client/getchatrooms/${userId}`)
+                .get(`${env.baseUrl}/api/client/getchatrooms`)
                 .then((res: AxiosResponse) => {
                 if (res.data) {
                     setChatRooms(res.data);
@@ -44,27 +54,29 @@ export default function Client({ data, chatRoomData }: Props) {
                 console.error('Error fetching chat rooms:', error);
                 });
             }
-        }, [userId]);
+        },);
         
         React.useEffect(() => {
             if (userId) {
                 const cacheBuster = new Date().getTime(); // Generate a unique value for cache busting
 
             axios
-                .get(`http://localhost:4000/api/client/messages/`)
+                .get(`${env.baseUrl}/api/client/messages/${userId}?_=${cacheBuster}`)
                 .then((res: AxiosResponse<{ messages: Message[] }>) => {
-                if (
-                    res.data.messages &&
-                    JSON.stringify(res.data.messages) !== JSON.stringify(messages)
-                ) {
-                    setMessages(res.data.messages);
-                }
+                // if (
+                //     res.data.messages &&
+                //     JSON.stringify(res.data.messages) !== JSON.stringify(messages)
+                // ) {
+                //     setMessages(res.data.messages);
+                // }
+                // 
+                    setMessages(res.data.messages)
                 })
                 .catch((error) => {
                 console.error('Error fetching messages:', error);
                 });
             }
-        } ,[messages]);
+        } );
     
 
 React.useEffect(() => {
@@ -81,20 +93,20 @@ React.useEffect(() => {
         return acc;
     }, {}) : {};
 
-    console.log(messages);
+    // console.log(messages);
     async function postData() {
         await messages
         await chatrooms
-        await fetch(`http://localhost:4000/api/messages`, {
+        await fetch(`${env.baseUrl}/api/messages`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-            user: chatrooms[1].user,
-            admin: messages[0].admin,
-            chatRoom: messages[0].chatRoom,
-            text: text
+            user: await chatrooms[1].user,
+            admin: await messages[0].admin,
+            chatRoom: await messages[0].chatRoom,
+            text: await text
             })
         });
         
@@ -102,7 +114,7 @@ React.useEffect(() => {
     }
 
     
-
+// console.log(chatrooms);
     const messageGroups = Object.entries(groupedMessages);    
 
     return (
@@ -118,7 +130,7 @@ React.useEffect(() => {
                 </div>
             </div>
     
-            <div className="mt-[70px] w-[100%]">
+            <div className="mt-[70px] w-[100%] h-screen">
                 <div className="w-full">
                     {messageGroups.map(([date, messages]: any, i: number) => (
                     <div key={date}>
@@ -130,6 +142,7 @@ React.useEffect(() => {
                         {
                         messages.map((message: any, j: number) => (
                             <div key={message._id}>
+                                
                             {  message.user && <>
 
                             <div
